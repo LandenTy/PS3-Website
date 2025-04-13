@@ -3,35 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PS3 Gamepad Keycodes</title>
+    <title>Simple Platformer</title>
     <style>
         body {
+            background-color: #87CEEB;
             font-family: Arial, sans-serif;
             text-align: center;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
-        #keycodeDisplay {
-            margin-top: 20px;
-            font-size: 24px;
-            font-weight: bold;
+        #gameArea {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background-color: #2C3E50;
+        }
+        #square {
+            width: 50px;
+            height: 50px;
+            background-color: #3498db;
+            position: absolute;
+            bottom: 50px; /* Start just above the ground */
+            left: 50%;
+            margin-left: -25px; /* Center horizontally */
+            transition: transform 0.1s ease-out;
+        }
+        #jumpButton {
+            position: absolute;
+            bottom: 20px;
+            width: 120px;
+            height: 40px;
+            background-color: #e74c3c;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            left: 50%;
+            margin-left: -60px;
         }
     </style>
 </head>
 <body>
-    <h1>Press Any Button on PS3 Gamepad</h1>
-    <p>Check the console or below for the keycode when a button is pressed.</p>
-    <div id="keycodeDisplay"></div>
+    <div id="gameArea">
+        <div id="square"></div>
+        <button id="jumpButton">Jump!</button>
+    </div>
 
     <script type="text/javascript">
-        // Function to log the keycode when a key is pressed
-        function logKeyCode(event) {
-            var keycode = event.keyCode || event.which; // Get the keycode
-            document.getElementById("keycodeDisplay").innerText = "Keycode: " + keycode;
-            console.log("Pressed Keycode: " + keycode);
+        // Game variables
+        var square = document.getElementById("square");
+        var jumpButton = document.getElementById("jumpButton");
+        var gameArea = document.getElementById("gameArea");
+
+        var positionX = 50; // Position of the square (percentage of screen width)
+        var positionY = 50; // Position of the square (height from bottom)
+        var isJumping = false;
+        var jumpHeight = 100;
+        var gravity = 2;
+        var moveSpeed = 5;
+
+        // Function to handle jumping
+        function jump() {
+            if (isJumping) return; // Prevent double jump
+            isJumping = true;
+            var jumpUp = setInterval(function() {
+                if (positionY < jumpHeight) {
+                    positionY += 5;
+                    square.style.bottom = positionY + 'px';
+                } else {
+                    clearInterval(jumpUp);
+                    var fallDown = setInterval(function() {
+                        if (positionY > 50) {
+                            positionY -= gravity;
+                            square.style.bottom = positionY + 'px';
+                        } else {
+                            clearInterval(fallDown);
+                            isJumping = false; // End the jump
+                        }
+                    }, 20);
+                }
+            }, 20);
         }
 
-        // Listen for keydown events to detect keycodes
-        window.addEventListener("keydown", logKeyCode, false);
+        // Handle D-PAD movement using arrow keys
+        function moveSquare(event) {
+            var key = event.keyCode || event.which;
+            if (key == 37) { // Left arrow (key code 37)
+                positionX -= moveSpeed;
+            } else if (key == 39) { // Right arrow (key code 39)
+                positionX += moveSpeed;
+            }
+
+            // Keep square within bounds of the game area
+            if (positionX < 0) positionX = 0;
+            if (positionX > window.innerWidth - 50) positionX = window.innerWidth - 50; // Keep inside the screen width
+
+            square.style.left = positionX + 'px';
+        }
+
+        // Listen for D-PAD arrow keys
+        window.addEventListener("keydown", moveSquare, false);
+
+        // Jump button click event
+        jumpButton.addEventListener("click", jump);
+
     </script>
 </body>
 </html>
