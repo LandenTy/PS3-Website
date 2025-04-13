@@ -3,71 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Rotating Square</title>
+    <title>PS3 Gamepad Keycodes</title>
     <style>
         body {
-            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
             text-align: center;
-            perspective: 600px; /* Add perspective for 3D effect */
+            padding: 20px;
         }
-        #square {
-            width: 100px;
-            height: 100px;
-            background-color: #3498db;
-            position: absolute;
-            top: 50px; /* Start position */
-            left: 50%;
-            margin-left: -50px; /* Center the square horizontally */
-            transform-style: preserve-3d;
-            transition: transform 0.2s ease-out; /* Smooth transition for rotation */
+        #keycodeDisplay {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div id="square"></div>
+    <h1>Press Any Button on PS3 Gamepad</h1>
+    <p>Check the console or below for the keycode when a button is pressed.</p>
+    <div id="keycodeDisplay"></div>
+
     <script type="text/javascript">
-        var square = document.getElementById("square");
-        var position = 50; // Starting position (Y-axis)
-        var rotationY = 0; // Starting rotation (X-axis)
-
-        // Function to move the square based on key press (Up/Down)
-        function moveSquare(event) {
-            var key = event.keyCode || event.which;
-
-            // Up arrow (key code 38), Down arrow (key code 40)
-            if (key == 38) { // Up
-                position -= 5;
-            } else if (key == 40) { // Down
-                position += 5;
-            }
-
-            // Keep the square within the viewport (optional)
-            if (position < 50) position = 50; // Don't move above 50px
-            if (position > 300) position = 300; // Don't move below 300px
-
-            square.style.top = position + "px"; // Update the position
+        // Function to log the keycode when a key is pressed
+        function logKeyCode(event) {
+            var keycode = event.keyCode || event.which; // Get the keycode
+            document.getElementById("keycodeDisplay").innerText = "Keycode: " + keycode;
+            console.log("Pressed Keycode: " + keycode);
         }
 
-        // Function to rotate the square based on D-Pad (left/right)
-        function rotateSquare(event) {
-            var key = event.keyCode || event.which;
-
-            // Left arrow (key code 37), Right arrow (key code 39)
-            if (key == 37) { // Left
-                rotationY -= 10;
-            } else if (key == 39) { // Right
-                rotationY += 10;
-            }
-
-            // Apply the rotation to the square using CSS 3D transformation
-            square.style.transform = 'rotateY(' + rotationY + 'deg)';
-        }
-
-        // Listen for keydown events (arrow keys)
-        window.addEventListener("keydown", function(event) {
-            moveSquare(event);
-            rotateSquare(event);
-        }, false);
+        // Listen for keydown events to detect keycodes
+        window.addEventListener("keydown", logKeyCode, false);
     </script>
 </body>
 </html>
