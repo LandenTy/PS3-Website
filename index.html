@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moving Square</title>
+    <title>Control Square with Controller</title>
     <style>
         body {
             background-color: #f0f0f0;
@@ -24,21 +24,29 @@
     <div id="square"></div>
     <script type="text/javascript">
         var square = document.getElementById("square");
-        var direction = 1;
         var position = 50; // Starting position
+        var speed = 5; // Speed of movement
 
-        function moveSquare() {
-            position += direction * 5; // Move the square 5px each time
+        // Function to move the square based on key press
+        function moveSquare(event) {
+            var key = event.keyCode || event.which;
 
-            // Reverse direction when it reaches top or bottom
-            if (position <= 50) direction = 1; 
-            if (position >= 300) direction = -1;
+            // Up arrow (key code 38), Down arrow (key code 40)
+            if (key == 38) { // Up
+                position -= speed;
+            } else if (key == 40) { // Down
+                position += speed;
+            }
+
+            // Keep the square within the viewport (optional)
+            if (position < 50) position = 50; // Don't move above 50px
+            if (position > 300) position = 300; // Don't move below 300px
 
             square.style.top = position + "px"; // Update the position
-            setTimeout(moveSquare, 20); // Repeat every 20ms
         }
 
-        moveSquare(); // Start the movement
+        // Listen for keydown events
+        window.addEventListener("keydown", moveSquare, false);
     </script>
 </body>
 </html>
