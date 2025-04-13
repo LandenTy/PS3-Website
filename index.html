@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Square with Controller</title>
+    <title>3D Rotating Square</title>
     <style>
         body {
             background-color: #f0f0f0;
             text-align: center;
+            perspective: 600px; /* Add perspective for 3D effect */
         }
         #square {
             width: 100px;
@@ -17,6 +18,8 @@
             top: 50px; /* Start position */
             left: 50%;
             margin-left: -50px; /* Center the square horizontally */
+            transform-style: preserve-3d;
+            transition: transform 0.2s ease-out; /* Smooth transition for rotation */
         }
     </style>
 </head>
@@ -24,18 +27,18 @@
     <div id="square"></div>
     <script type="text/javascript">
         var square = document.getElementById("square");
-        var position = 50; // Starting position
-        var speed = 5; // Speed of movement
+        var position = 50; // Starting position (Y-axis)
+        var rotationY = 0; // Starting rotation (X-axis)
 
-        // Function to move the square based on key press
+        // Function to move the square based on key press (Up/Down)
         function moveSquare(event) {
             var key = event.keyCode || event.which;
 
             // Up arrow (key code 38), Down arrow (key code 40)
             if (key == 38) { // Up
-                position -= speed;
+                position -= 5;
             } else if (key == 40) { // Down
-                position += speed;
+                position += 5;
             }
 
             // Keep the square within the viewport (optional)
@@ -45,8 +48,26 @@
             square.style.top = position + "px"; // Update the position
         }
 
-        // Listen for keydown events
-        window.addEventListener("keydown", moveSquare, false);
+        // Function to rotate the square based on D-Pad (left/right)
+        function rotateSquare(event) {
+            var key = event.keyCode || event.which;
+
+            // Left arrow (key code 37), Right arrow (key code 39)
+            if (key == 37) { // Left
+                rotationY -= 10;
+            } else if (key == 39) { // Right
+                rotationY += 10;
+            }
+
+            // Apply the rotation to the square using CSS 3D transformation
+            square.style.transform = 'rotateY(' + rotationY + 'deg)';
+        }
+
+        // Listen for keydown events (arrow keys)
+        window.addEventListener("keydown", function(event) {
+            moveSquare(event);
+            rotateSquare(event);
+        }, false);
     </script>
 </body>
 </html>
